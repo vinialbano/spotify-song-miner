@@ -1,0 +1,5 @@
+.idea
+node_modules
+.DS_Store
+public/.sass-cache
+public/stylesheets/*.css
