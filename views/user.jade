@@ -1,0 +1,8 @@
+extends layout
+
+block content
+    h1 Welcome, #{user.display_name}
+    p Please choose one of your playlists
+    ul
+        each val in playlists
+            li= val.id + ': ' + val.name
