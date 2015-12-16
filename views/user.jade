@@ -2,7 +2,16 @@ extends layout
 
 block content
     h1 Welcome, #{user.display_name}
-    p Please choose one of your playlists
-    ul
+    hr
+    p(class="lead") Please choose one of your playlists to begin
         each val in playlists
-            li= val.id + ': ' + val.name
+            div(class="row")
+                div(class="col-md-12")
+                    button(class="btn btn-primary btn-block" role="button" onclick="submitPlaylist(\"#{val.id}\")") #{val.name}
+    form(method="post" action="/playlist" id="playlist-form")
+        input(type="hidden" name="playlistId" id="playlist-id")
+    script.
+        function submitPlaylist(id) {
+            $("#playlist-id").val(id);
+            $("#playlist-form").submit();
+        }

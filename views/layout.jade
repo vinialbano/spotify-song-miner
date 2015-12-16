@@ -1,7 +1,27 @@
 doctype html
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    block content
+html(lang="en")
+    head
+        meta(charset="utf-8")
+        meta(http-equiv="X-UA-Compatible" content="IE=edge")
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        title Spotify Song Miner
+        link(rel='stylesheet', href='/stylesheets/styles.css')
+    body
+        nav(class="navbar navbar-inverse navbar-fixed-top")
+            div(class="container")
+                div(class="navbar-header")
+                    button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar")
+                        span(class="sr-only") Toggle navigation
+                        span(class="icon-bar")
+                        span(class="icon-bar")
+                        span(class="icon-bar")
+                    a(class="navbar-brand" href="/") Spotify Song Miner
+
+                div(id="navbar" class="navbar-collapse collapse")
+                    ul(class="nav navbar-nav")
+                        li: a(href="/about") About
+                        li: a(href="/contact") Contact
+        div(class="container")
+            block content
+        script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js")
+        script(src="/javascripts/bootstrap.min.js")

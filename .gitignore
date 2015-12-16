@@ -4,3 +4,4 @@ node_modules
 public/.sass-cache
 public/stylesheets/*.css
 npm-debug.log
+.sass-cache

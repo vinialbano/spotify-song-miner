@@ -35,7 +35,7 @@ router.get('/callback', function (req, res) {
         });
 });
 
-/* GET users listing. */
+/* GET users playlists. */
 router.get('/user', function (req, res, next) {
     var user;
     var playlists;
@@ -58,5 +58,11 @@ router.get('/user', function (req, res, next) {
         );
 
 });
+
+router.post('/playlist', function (req, res){
+   res.send(req.body.playlistId);
+});
+
+
 
 module.exports = router;
