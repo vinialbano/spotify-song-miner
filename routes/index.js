@@ -49,7 +49,6 @@ router.get('/user', function (req, res, next) {
         })
         .then(spotifyApi.getCurrentUserPlaylists()
             .then(function(data){
-                //console.log(data.body);
                 playlists = filters.playlists(data.body);
             })
             .then(function(){
@@ -60,7 +59,14 @@ router.get('/user', function (req, res, next) {
 });
 
 router.post('/playlist', function (req, res){
-   res.send(req.body.playlistId);
+    var tracks;
+    spotifyApi.getPlaylist(req.body.user_id, req.body.playlist_id)
+        .then(function (data) {
+            tracks = filters.playlistTracks(data.body.tracks);
+            res.send(tracks);
+        }, function (err) {
+            res.send(err);
+        });
 });
 
 

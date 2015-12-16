@@ -21,7 +21,7 @@ var filters = {
                 name: obj.name,
                 duration: obj.duration_ms,
                 explicit: obj.explicit,
-                populatiry: obj.popularity,
+                popularity: obj.popularity,
                 album_name: obj.album.name,
                 album_id: obj.album.id,
                 artists: obj.artists.map(function (artist) {
@@ -65,7 +65,7 @@ var filters = {
                 name: obj.name,
                 duration: obj.duration_ms,
                 explicit: obj.explicit,
-                populatiry: obj.popularity
+                popularity: obj.popularity
             };
         });
     }

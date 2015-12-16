@@ -9,7 +9,8 @@ block content
                 div(class="col-md-12")
                     button(class="btn btn-primary btn-block" role="button" onclick="submitPlaylist(\"#{val.id}\")") #{val.name}
     form(method="post" action="/playlist" id="playlist-form")
-        input(type="hidden" name="playlistId" id="playlist-id")
+        input(type="hidden" name="user_id" id="user-id" value="#{user.id}")
+        input(type="hidden" name="playlist_id" id="playlist-id")
     script.
         function submitPlaylist(id) {
             $("#playlist-id").val(id);
