@@ -2,9 +2,9 @@ var express = require('express');
 var router = express.Router();
 var spotifyApi = require('../spotify');
 var filters = require('../filters');
+var Sync = require('sync');
 
-
-var scopes = ['playlist-read-private', 'playlist-read-collaborative', 'playlist-modify-public'];
+var scopes = ['playlist-read-private', 'playlist-read-collaborative', 'playlist-modify-public', 'user-read-private'];
 var state = 'spotify-song-miner-random-string';
 
 var authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
@@ -19,7 +19,86 @@ router.get('/login', function (req, res) {
 });
 
 router.get('/callback', function (req, res) {
-    spotifyApi.authorizationCodeGrant(req.query.code)
+
+    Sync(function () {
+        var granted = (grantAccessToken.sync(null, req.query.code) == "Success");
+        if (granted) {
+            res.redirect('/user');
+        } else {
+            console.log("Error");
+        }
+    });
+});
+
+/* GET users playlists. */
+router.get('/user', function (req, res, next) {
+
+    Sync(function () {
+        var user = getUser.sync(null);
+        var playlists = getUsersPlaylists.sync(null);
+
+        res.render('user', {user: user, playlists: playlists});
+    });
+});
+
+router.post('/playlist', function (req, res, next) {
+    var playlistTracks;
+    var artistsIds;
+    var topTracks;
+
+    Sync(function () {
+        playlistTracks = getPlaylistTracks.sync(null, req.body.user_id, req.body.playlist_id);
+        artistsIds = filters.playlistArtistsIds(playlistTracks);
+        playlistTracks = filters.playlistTracks(playlistTracks);
+        console.log(playlistTracks.length);
+        topTracks = [];
+        artistsIds.forEach(function (id) {
+            topTracks = topTracks.concat(getArtistTopTracks.sync(null, id, req.body.user_country));
+        });
+        console.log(topTracks.length);
+        res.send(topTracks);
+    });
+});
+
+var getPlaylistTracks = function (userId, playlistId, callback) {
+    spotifyApi.getPlaylist(userId, playlistId)
+        .then(function (data) {
+            var playlistTracks = filters.playlistTracksWithArtists(data.body.tracks);
+            callback(null, playlistTracks);
+        }, function (err) {
+            callback(err);
+        });
+};
+
+var getArtistTopTracks = function (artistId, userCountry, callback) {
+    spotifyApi.getArtistTopTracks(artistId, userCountry)
+        .then(function (data) {
+            callback(null, filters.topTracks(data.body));
+        }, function (err) {
+            callback(err);
+        });
+};
+
+var getUser = function (callback) {
+    spotifyApi.getMe()
+        .then(function (data) {
+            callback(null, data.body);
+        }, function (err) {
+            callback(err);
+        });
+};
+
+var getUsersPlaylists = function (callback) {
+    spotifyApi.getCurrentUserPlaylists()
+        .then(function (data) {
+            callback(null, filters.playlists(data.body));
+        }, function (err) {
+            callback(err);
+        });
+};
+
+var grantAccessToken = function (code, callback) {
+    spotifyApi.authorizationCodeGrant(code)
         .then(function (data) {
             console.log('The token expires in ' + data.body['expires_in']);
             console.log('The access token is ' + data.body['access_token']);
@@ -29,46 +108,11 @@ router.get('/callback', function (req, res) {
             spotifyApi.setAccessToken(data.body['access_token']);
             spotifyApi.setRefreshToken(data.body['refresh_token']);
 
-            res.redirect('/user');
+            callback(null, "Success");
         }, function (err) {
-            console.log('Something went wrong!', err);
+            callback(err);
         });
-});
-
-/* GET users playlists. */
-router.get('/user', function (req, res, next) {
-    var user;
-    var playlists;
-
-    // Gets the user
-    spotifyApi.getMe()
-        .then(function (data) {
-            user = data.body;
-        }, function (err) {
-            console.log('Something went wrong!', err);
-        })
-        .then(spotifyApi.getCurrentUserPlaylists()
-            .then(function(data){
-                playlists = filters.playlists(data.body);
-            })
-            .then(function(){
-                res.render('user', {user: user, playlists: playlists});
-            })
-        );
-
-});
-
-router.post('/playlist', function (req, res){
-    var tracks;
-    spotifyApi.getPlaylist(req.body.user_id, req.body.playlist_id)
-        .then(function (data) {
-            tracks = filters.playlistTracks(data.body.tracks);
-            res.send(tracks);
-        }, function (err) {
-            res.send(err);
-        });
-});
-
+};
 
 
 module.exports = router;

@@ -3,7 +3,7 @@
 var filters = {
 
     // Playlists
-    playlists : function (data) {
+    playlists: function (data) {
         return data.items.map(function (obj) {
             return {
                 id: obj.id,
@@ -13,7 +13,7 @@ var filters = {
     },
 
 // Playlist Tracks
-    playlistTracks : function (data) {
+    playlistTracksWithArtists: function (data) {
         return data.items.map(function (obj) {
             obj = obj.track;
             return {
@@ -22,8 +22,6 @@ var filters = {
                 duration: obj.duration_ms,
                 explicit: obj.explicit,
                 popularity: obj.popularity,
-                album_name: obj.album.name,
-                album_id: obj.album.id,
                 artists: obj.artists.map(function (artist) {
                     return artist.id;
                 })
@@ -31,8 +29,34 @@ var filters = {
         });
     },
 
+    playlistTracks: function (data) {
+        return data.map(function (obj) {
+            return {
+                id: obj.id,
+                name: obj.name,
+                duration: obj.duration_ms,
+                explicit: obj.explicit,
+                popularity: obj.popularity
+            };
+        });
+    },
+
+    // Playlist Artists IDs
+    playlistArtistsIds: function (data) {
+        var array = data.map(function (obj) {
+                return obj.artists;
+            })
+            .reduce(function (a, b) {
+                return a.concat(b);
+            }, []);
+        array = array.filter(function (a, i) {
+            return array.indexOf(a) === i;
+        });
+        return array;
+    },
+
 // List of artists
-    artists : function (data) {
+    artists: function (data) {
         return data.artists.map(function (obj) {
             return {
                 id: obj.id,
@@ -45,7 +69,7 @@ var filters = {
     },
 
 // List of albums
-    albums : function (data) {
+    albums: function (data) {
         return data.albums.map(function (obj) {
             return {
                 id: obj.id,
@@ -58,7 +82,7 @@ var filters = {
     },
 
 // Artist top tracks
-    topTracks : function (data) {
+    topTracks: function (data) {
         return data.tracks.map(function (obj) {
             return {
                 id: obj.id,

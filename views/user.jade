@@ -10,6 +10,7 @@ block content
                     button(class="btn btn-primary btn-block" role="button" onclick="submitPlaylist(\"#{val.id}\")") #{val.name}
     form(method="post" action="/playlist" id="playlist-form")
         input(type="hidden" name="user_id" id="user-id" value="#{user.id}")
+        input(type="hidden" name="user_country" id="user-country" value="#{user.country}")
         input(type="hidden" name="playlist_id" id="playlist-id")
     script.
         function submitPlaylist(id) {
