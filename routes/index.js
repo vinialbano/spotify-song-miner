@@ -50,20 +50,18 @@ router.post('/playlist', function (req, res, next) {
         playlistTracks = getPlaylistTracks.sync(null, req.body.user_id, req.body.playlist_id);
         artistsIds = filters.playlistArtistsIds(playlistTracks);
         playlistTracks = filters.playlistTracks(playlistTracks);
-        console.log(playlistTracks.length);
         topTracks = [];
         artistsIds.forEach(function (id) {
             topTracks = topTracks.concat(getArtistTopTracks.sync(null, id, req.body.user_country));
         });
-        console.log(topTracks.length);
-        res.send(topTracks);
+        res.render('result', { playlist: playlistTracks, topTracks: topTracks});
     });
 });
 
 var getPlaylistTracks = function (userId, playlistId, callback) {
-    spotifyApi.getPlaylist(userId, playlistId)
+    spotifyApi.getPlaylistTracks(userId, playlistId)
         .then(function (data) {
-            var playlistTracks = filters.playlistTracksWithArtists(data.body.tracks);
+            var playlistTracks = filters.playlistTracksWithArtists(data.body);
             callback(null, playlistTracks);
         }, function (err) {
             callback(err);

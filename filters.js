@@ -87,7 +87,7 @@ var filters = {
             return {
                 id: obj.id,
                 name: obj.name,
-                duration: obj.duration_ms,
+                //duration: obj.duration_ms,
                 explicit: obj.explicit,
                 popularity: obj.popularity
             };

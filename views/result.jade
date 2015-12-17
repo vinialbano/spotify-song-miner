@@ -1,0 +1,38 @@
+extends layout
+
+block content
+    h1 Song filter results
+    hr
+    div(class="row")
+        div(class="col-md-6")
+            h2 Playlist songs - #{playlist.length} songs
+            table(class="table table-striped")
+                thead
+                    tr
+                        th ID
+                        th Song name
+                        th Explicit
+                        th Popularity
+                tbody
+                    each song in playlist
+                        tr
+                            td #{song.id}
+                            td #{song.name}
+                            td #{song.explicit}
+                            td #{song.popularity}
+        div(class="col-md-6")
+            h2 Related artists songs - #{topTracks.length} songs
+            table(class="table table-striped")
+                thead
+                    tr
+                        th ID
+                        th Song name
+                        th Explicit
+                        th Popularity
+                tbody
+                    each song in topTracks
+                        tr
+                            td #{song.id}
+                            td #{song.name}
+                            td #{song.explicit}
+                            td #{song.popularity}
